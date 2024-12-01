@@ -102,9 +102,8 @@
   curl -X GET "http://localhost:3000/api/products?name=Товар%201&plu=12345"
 
 # Задание 1. Сервис истории товаров
-  ```url
-  [Сервис истории товаров](https://github.com/moonssword/history_service)
+[Сервис истории товаров](https://github.com/moonssword/history_service)
 
 # Задание 2. Сервис пользователей
-  ```url
-  [Сервис пользователей](https://github.com/moonssword/user-service)
+[Сервис пользователей](https://github.com/moonssword/user-service)
+
