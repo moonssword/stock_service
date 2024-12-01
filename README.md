@@ -1,55 +1,102 @@
-Сервис остатков товаров в магазине
-<----Endpoints---->
+# Сервис остатков товаров в магазине
 
-Создание товара
-POST /products
-Body: { "plu": "12345", "name": "Товар 1" }
+Этот сервис предоставляет API для управления товарами и остатками товаров на складе в магазинах. С помощью этого API можно создавать товары, управлять остатками на складах, увеличивать или уменьшать количество товаров, а также получать информацию о товарах и остатках с различными фильтрами.
 
-Создание остатка
-POST /stock
-Body: { "plu": "12345", "shop_id": 1, "on_shelf": 10, "in_order": 2 }
+## <----Эндпоинты---->
 
-Увеличение остатка
-PATCH /stock/increase
-Body: { "plu": "12345", "shop_id": 1, "amount": 5 }
+### 1. **Создание товара**
+- **Метод:** `POST`
+- **Эндпоинт:** `/products`
+- **Описание:** Создает новый товар в системе.
+- **Тело запроса:**
+  ```json
+  {
+    "plu": "12345",
+    "name": "Товар 1"
+  }
 
-Уменьшение остатка
-PATCH /stock/decrease
-Body: { "plu": "12345", "shop_id": 1, "amount": 3 }
+- **Пример запроса:**
+  ```bash
+  curl -X POST http://localhost:3000/api/products \
+  -H "Content-Type: application/json" \
+  -d '{"plu": "123", "name": "Product Name"}'
 
-Получение остатков с фильтрами
-GET /stock
-Query Params: plu=12345&shop_id=1&on_shelf_min=10&on_shelf_max=20
+### 2. **Создание остатка**
+- **Метод:** `POST`
+- **Эндпоинт:** `/stock`
+- **Описание:** Создает запись о наличии товара в магазине. В этой записи указывается количество товара на полке и в заказах.
+- **Тело запроса:**
+  ```json
+  {
+    "product_id": "1",
+    "shop_id": 1,
+    "on_shelf": 10,
+    "in_order": 2
+  }
 
-Получение товаров с фильтрами
-GET /products
-Query Params: name=Товар 1&plu=12345
+- **Пример запроса:**
+  ```bash
+  curl -X POST http://localhost:3000/api/stocks \
+  -H "Content-Type: application/json" \
+  -d '{"product_id": "1", "shop_id": "1", "on_shelf": 50, "in_order": 20}'
+
+### 3. **Увеличение остатка**
+- **Метод:** `PATCH`
+- **Эндпоинт:** `/stock/increase`
+- **Описание:** Увеличивает количество товара на складе в указанном магазине.
+- **Тело запроса:**
+  ```json
+  {
+    "stock_id": 1,
+    "quantity": 60
+  }
+- **Пример запроса:**
+  ```bash
+  curl -X PATCH http://localhost:3000/api/stocks/increase \
+  -H "Content-Type: application/json" \
+  -d '{"stock_id": "1","quantity": 60}'
 
 
-<----Примеры запросов---->
+### 4. **Уменьшение остатка**
+- **Метод:** `PATCH`
+- **Эндпоинт:** `/stock/decrease`
+- **Описание:** Уменьшает количество товара на складе в указанном магазине.
+- **Тело запроса:**
+  ```json
+  {
+    "stock_id": 1,
+    "quantity": 60
+  }
 
-Создание товара (POST)
-curl -X POST http://localhost:3000/api/products \
--H "Content-Type: application/json" \
--d '{"plu": "123", "name": "Product Name"}'
+- **Пример запроса:**
+  ```bash
+  curl -X PATCH http://localhost:3000/api/stocks/decrease \
+  -H "Content-Type: application/json" \
+  -d '{"stock_id": "1","quantity": 60}'
+  
+### 5. **Получение остатков с фильтрами**
+- **Метод:** `GET`
+- **Эндпоинт:** `/stock`
+- **Описание:** Получение остатков товаров с применением фильтров по различным параметрам, таким как артикул товара, магазин, минимальное и максимальное количество на полке.
+- **Параметры запроса:**
+  - `plu`: Артикул товара, по которому необходимо получить остатки (например, `12345`).
+  - `shop_id`: Идентификатор магазина, в котором нужно проверить остатки (например, `1`).
+  - `on_shelf_min`: Минимальное количество товара на полке (например, `10`).
+  - `on_shelf_max`: Максимальное количество товара на полке (например, `20`).
 
-Создание остатка (POST)
-curl -X POST http://localhost:3000/api/stocks \
--H "Content-Type: application/json" \
--d '{"product_id": "1", "shop_id": "1", "on_shelf": 50, "in_order": 20}'
+- **Пример запроса:**
+  ```bash
+  curl -X GET "http://localhost:3000/api/stock?plu=12345&shop_id=1&on_shelf_min=10&on_shelf_max=20"
 
-Увеличение остатка (PATCH)
-curl -X PATCH http://localhost:3000/api/stocks/increase \
--H "Content-Type: application/json" \
--d '{"stock_id": "1","quantity": 60}'
 
-Уменьшение остатка (PATCH)
-curl -X PATCH http://localhost:3000/api/stocks/increase \
--H "Content-Type: application/json" \
--d '{"stock_id": "1","quantity": 60}'
+### 6. **Получение товаров с фильтрами**
+- **Метод:** `GET`
+- **Эндпоинт:** `/products`
+- **Описание:** Получение списка товаров с фильтрами по имени товара и артикулу.
+- **Параметры запроса:**
+  - `name`: Название товара, по которому необходимо выполнить поиск (например, `Товар 1`).
+  - `plu`: Артикул товара, по которому нужно получить данные (например, `12345`).
 
-Получение остатков по фильтрам (GET)
-curl -X GET "http://localhost:3000/api/stocks?plu=123&shop_id=1&quantity_on_shelf__gte=30&quantity_in_order__lte=20"
-
-Получение товаров по фильтрам (GET)
-curl -X GET "http://localhost:3000/api/products?plu=123&name=Product"
+- **Пример запроса:**
+  ```bash
+  curl -X GET "http://localhost:3000/api/products?name=Товар%201&plu=12345"
